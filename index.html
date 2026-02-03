@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshLauncher - Ultimate Steam Oyun Yöneticisi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #060810;
+            color: #e8edf2;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 229, 204, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(0, 184, 169, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            padding: 20px 50px;
+            background: linear-gradient(135deg, #070a10 0%, #0a0e16 100%);
+            border-bottom: 1px solid #1e2736;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-dot {
+            width: 8px;
+            height: 8px;
+            background: #00e5cc;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #00e5cc;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #00e5cc;
+            text-shadow: 0 0 20px rgba(0, 229, 204, 0.5);
+        }
+
+        .version-badge {
+            background: rgba(0, 229, 204, 0.08);
+            border: 1px solid rgba(0, 229, 204, 0.25);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #00e5cc;
+            letter-spacing: 1px;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            text-align: center;
+            padding: 120px 20px 80px;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00e5cc 0%, #00fff0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(0, 229, 204, 0.3);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 229, 204, 0.4)); }
+            50% { filter: drop-shadow(0 0 30px rgba(0, 229, 204, 0.7)); }
+        }
+
+        .hero .subtitle {
+            font-size: 18px;
+            color: #7a8896;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .hero .description {
+            max-width: 700px;
+            margin: 0 auto 50px;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #a8b5c4;
+        }
+
+        /* Download Button */
+        .download-btn {
+            display: inline-block;
+            padding: 18px 50px;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-decoration: none;
+            color: #000;
+            background: linear-gradient(135deg, #00e5cc 0%, #00b8a9 100%);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 229, 204, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 229, 204, 0.6);
+        }
+
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .download-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Features Section */
+        .features {
+            position: relative;
+            padding: 80px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 1;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 38px;
+            margin-bottom: 60px;
+            color: #00e5cc;
+            text-shadow: 0 0 30px rgba(0, 229, 204, 0.3);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #0b0e14 0%, #0f1319 100%);
+            border: 1px solid #1e2736;
+            border-radius: 16px;
+            padding: 35px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #00e5cc 0%, #00b8a9 100%);
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: #00e5cc;
+            box-shadow: 0 10px 40px rgba(0, 229, 204, 0.2);
+        }
+
+        .feature-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #00e5cc;
+        }
+
+        .feature-card p {
+            color: #7a8896;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        /* Info Section */
+        .info-section {
+            position: relative;
+            padding: 80px 50px;
+            max-width: 900px;
+            margin: 0 auto;
+            z-index: 1;
+        }
+
+        .info-box {
+            background: rgba(0, 229, 204, 0.04);
+            border: 1px solid rgba(0, 229, 204, 0.15);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h3 {
+            color: #00e5cc;
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-box li {
+            padding: 12px 0;
+            color: #a8b5c4;
+            font-size: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box li:last-child {
+            border-bottom: none;
+        }
+
+        .info-box li::before {
+            content: '●';
+            color: #00e5cc;
+            font-size: 10px;
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid #1e2736;
+            margin-top: 80px;
+            color: #3d4a5c;
+            font-size: 13px;
+            z-index: 1;
+        }
+
+        footer a {
+            color: #00e5cc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #00fff0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero .description {
+                font-size: 15px;
+            }
+
+            .features, .info-section {
+                padding: 50px 20px;
+            }
+
+            .features h2 {
+                font-size: 28px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4) { animation-delay: 0.4s; }
+        .feature-card:nth-child(5) { animation-delay: 0.5s; }
+        .feature-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <div class="bg-overlay"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <div class="logo-dot"></div>
+            <span class="logo-text">FRESHLAUNCHER</span>
+        </div>
+        <div class="version-badge">ULTIMATE v5</div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>FRESHLAUNCHER</h1>
+        <p class="subtitle">Ultimate Edition</p>
+        <p class="description">
+            Steam oyunlarınızı yönetmenin en gelişmiş yolu. Modern arayüz, hızlı performans ve kolay kullanım ile oyun deneyiminizi bir üst seviyeye taşıyın.
+        </p>
+        <a href="#" class="download-btn">📥 İNDİR</a>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2>✨ Özellikler</h2>
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <span class="feature-icon">🎮</span>
+                <h3>Steam Entegrasyonu</h3>
+                <p>Steam hesabınız ile tam entegrasyon. Oyunlarınızı kolayca yönetin, yükleyin ve oynayın.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <span class="feature-icon">📚</span>
+                <h3>Akıllı Kütüphane</h3>
+                <p>Tüm oyunlarınız düzenli bir kütüphanede. Hızlı arama, filtreleme ve sıralama özellikleri.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <span class="feature-icon">⚡</span>
+                <h3>Hızlı Performans</h3>
+                <p>Optimize edilmiş kod yapısı sayesinde yıldırım hızında çalışma ve minimum sistem kaynağı kullanımı.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <span class="feature-icon">🛡️</span>
+                <h3>Güvenli Lisanslama</h3>
+                <p>GitHub API tabanlı güvenli lisans sistemi. HWID bağlantısı ile ekstra koruma katmanı.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <span class="feature-icon">🎨</span>
+                <h3>Modern Tasarım</h3>
+                <p>Neon efektler, animasyonlar ve cyberpunk temalı arayüz ile göz alıcı kullanıcı deneyimi.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <span class="feature-icon">🔄</span>
+                <h3>Otomatik Senkronizasyon</h3>
+                <p>Oyun bilgileriniz otomatik olarak güncellenir. Steam mağazası ile tam uyumlu çalışır.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section">
+        <div class="info-box">
+            <h3>🔧 Sistem Gereksinimleri</h3>
+            <ul>
+                <li>Windows 10/11 (64-bit)</li>
+                <li>Steam Yüklü Olmalı</li>
+                <li>İnternet Bağlantısı</li>
+                <li>2 GB RAM (Önerilen: 4 GB)</li>
+                <li>500 MB Disk Alanı</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h3>💡 Nasıl Çalışır?</h3>
+            <ul>
+                <li>FreshLauncher'ı indirin ve çalıştırın</li>
+                <li>Lisans anahtarınız ile giriş yapın</li>
+                <li>Millenium Framework otomatik kurulur</li>
+                <li>Steam mağazasından oyun seçin ve ekleyin</li>
+                <li>Kütüphanenizden oyunlarınızı yönetin</li>
+                <li>Steam restart sonrası oyunlarınız hazır!</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h3>🎯 Neden FreshLauncher?</h3>
+            <ul>
+                <li>Kullanımı son derece kolay ve sezgisel</li>
+                <li>Discord Rich Presence desteği</li>
+                <li>Otomatik oyun güncelleme sistemi</li>
+                <li>Canlı bildirim sistemi</li>
+                <li>Detaylı webhook logları</li>
+                <li>Sürekli geliştirme ve destek</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 FreshLauncher Ultimate. Tüm hakları saklıdır.</p>
+        <p style="margin-top: 10px;">
+            Sorularınız için: <a href="mailto:support@freshlauncher.com">support@freshlauncher.com</a>
+        </p>
+    </footer>
+
+    <script>
+        // Smooth scroll animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.feature-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+
+            // Download button click - Burayı kendi indirme linkine göre düzenle
+            const downloadBtn = document.querySelector('.download-btn');
+            downloadBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Buraya indirme linkini ekle
+                alert('İndirme Başlıyor";');
+                // window.location.href = "https://3005.filemail.com/api/file/get?filekey=9aw1KkaoCjsirXxG6Ms73_vdYCgWAiz6ruNq02KU3ExKi12Vl3FIHlKL9Q&pk_vid=4cbfd6a5c5d42dac1770137548d74712";
+            });
+        });
+    </script>
+</body>
+</html>
