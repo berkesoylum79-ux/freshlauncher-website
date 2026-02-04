@@ -138,6 +138,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
         .download-btn:hover {
@@ -381,7 +382,7 @@
         <p class="description">
             Steam oyunlarınızı yönetmenin en gelişmiş yolu. Modern arayüz, hızlı performans ve kolay kullanım ile oyun deneyiminizi bir üst seviyeye taşıyın.
         </p>
-        <a href="#" class="download-btn">📥 İNDİR</a>
+        <a href="#" class="download-btn" id="downloadBtn">📥 İNDİR</a>
     </section>
 
     <!-- Features Section -->
@@ -491,13 +492,16 @@
                 observer.observe(card);
             });
 
-            // Download button click - Burayı kendi indirme linkine göre düzenle
-            const downloadBtn = document.querySelector('.download-btn');
+            // Download button - İNDİRME LİNKİ AKTİF!
+            const downloadBtn = document.getElementById('downloadBtn');
             downloadBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                // Buraya indirme linkini ekle
-                alert('İndirme Başlıyor";');
-                // window.location.href = "https://3005.filemail.com/api/file/get?filekey=9aw1KkaoCjsirXxG6Ms73_vdYCgWAiz6ruNq02KU3ExKi12Vl3FIHlKL9Q&pk_vid=4cbfd6a5c5d42dac1770137548d74712";
+                
+                // İndirme bildirimi göster
+                alert('İndirme başlıyor...\n\nDosya indirilmeye başlanacak!');
+                
+                // İndirme linkine yönlendir (Artık çalışıyor!)
+                window.location.href = "https://3005.filemail.com/api/file/get?filekey=9aw1KkaoCjsirXxG6Ms73_vdYCgWAiz6ruNq02KU3ExKi12Vl3FIHlKL9Q&pk_vid=4cbfd6a5c5d42dac1770137548d74712";
             });
         });
     </script>
